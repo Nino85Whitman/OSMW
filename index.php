@@ -2,8 +2,13 @@
 /*
  foreach($_POST as $key => $val) echo '$_POST["'.$key.'"]='.$val.'<br />';
  foreach($_GET as $key => $val) echo '$_GET["'.$key.'"]='.$val.'<br />';
- foreach($_SESSION as $key => $val) echo '$_SESSION["'.$key.'"]='.$val.'<br />';
 */
+
+
+$i = rand(1, 9);
+$LOGO = 'img/logo'.$i.'.png';
+
+
 $fichier = './inc/config/config.php';
 if (file_exists($fichier) AND filesize($fichier ) > 0)
 {
@@ -11,7 +16,7 @@ if (file_exists($fichier) AND filesize($fichier ) > 0)
 	require_once ('inc/config/fonctions.php');
 	require_once ('inc/config/radmin.php');
 
-	if ($_GET['a'] == 'logout')
+	if (isset($_GET['a']) AND $_GET['a'] == 'logout')
 	{
 		$_SESSION = array();
 		session_destroy();
@@ -36,8 +41,8 @@ if (file_exists($fichier) AND filesize($fichier ) > 0)
     <link rel="stylesheet" href="css/btn3d.css" type="text/css" />
     <link rel="stylesheet" href="css/login.css" type="text/css" />
     <link rel="stylesheet" href="css/custom.css" type="text/css" />
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+   
+   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -46,7 +51,9 @@ if (file_exists($fichier) AND filesize($fichier ) > 0)
 	<script src="js/button.js"></script>
 	
 </head>
+
 <body>
+
 <div class="container">
 
 <?php
@@ -76,7 +83,6 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['pas
 			$_SESSION['privilege'] = $data['privilege'];
 			$_SESSION['osAutorise'] = $data['osAutorise'];
 			$_SESSION['authentification']=true;
-			$_SESSION['zooming_select']=50;
 			$_GET['a'] ="GestSims";
 			 break;
 		}
@@ -99,16 +105,6 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['pas
 	$reponse->closeCursor(); 
 }
 
-
-if ($translator && isset($_SESSION['authentification']))
-{
-    require_once ('./inc/config/translator.php');
-	echo('<div class="pull-right">');
-	echo '<span class="label label-danger">Security level <span class="label label-default">'.$_SESSION['privilege'].'</span></span>   ';
-	include_once("./inc/config/flags.php");
-	echo('</div>');
-}
-
 // **********************
 // PAGE EN ACCES SECURISE
 // **********************
@@ -121,13 +117,13 @@ if (isset($_SESSION['authentification']))
 	// Si le moteur selectionne a change
 	if (isset($_POST['OSSelect'])){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	
-    if ($_GET['a'])
+    if (isset($_GET['a']))
     {
         $a = $_GET['a'];
 		//***************************************** OpenSim Manager Web **************************************************************************
         if ($a == "GestSims") {include('inc/GestSims.php');	}           				// # Gestion Simulator
         if ($a == "GestSave") {include('inc/GestSave.php');}     						// # Gestion backup
-        if ($a == "Map") {include('inc/GestMap.php');}           						// # Map
+        if ($a == "Help") {include('inc/Help.php');}           							// # Aide
         if ($a == "AdminLands") {include('inc/admin/GestRegion.php');}         			// admin // # Gestion des Regions par moteur
         if ($a == "AdminUsers") {include('inc/admin/GestAdminUsers.php');}    			// admin // # Gestion des utilisateurs
         if ($a == "AdminSims") {include('inc/admin/GestSimulateur.php');}    			// admin // # Gestion des simulateurs
@@ -156,7 +152,8 @@ else
 {
 ?>
 
-<div class="text-center"><h2 class="title"><span><br>OSMW</span></h2></div>
+<!-- 	<div class="text-center"><h2 class="title"><span><br>OSMW</span></h2></div>  -->
+
 <form class="form-signin" action="index.php" method="post" name="connect">
     <?php if (isset($_GET['erreur']) && ($_GET['erreur'] == "login")): ?>
         <div class="alert alert-danger alert-dismissible" role="alert">
@@ -192,7 +189,7 @@ else
         </div>
     <?php endif; ?>
 
-    <img style="height:256px;" class="img-thumbnail img-circle center-block" alt="Logo Server" src="img/logo.png">
+    <img style="height:256px;" class="img-thumbnail img-circle center-block" alt="Logo Server" src="<?php echo $LOGO;?>">
     <!--<h2 class="form-signin-heading text-center"></h2>-->
     <br />
     <label for="firstname" class="sr-only">Firstname</label>
@@ -209,14 +206,18 @@ else
 <?php } ?>
 
 <div class="clearfix"></div>
-
 </div>
 
+
 <footer class="footer">
-   <p class="text-center"> <u><b>OpenSimulator Manager Web by fgagod</b></u> <span class="badge badge-pill badge-info"><?php echo INI_Conf('VersionOSMW', 'VersionOSMW'); ?></span></p>
+	<div class="alert alert-info fade in">
+	<a href="." class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	<center> <u><b>Open Simulator Manager Web (O.S.M.W) <br> <?php echo INI_Conf('VersionOSMW', 'VersionOSMW');?></b></u> by Nino85 Whitman</center>
+	</div>
 </footer>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!--<script src="https://code.jquery.com/jquery-3.7.1.js"></script>--!>
+<script src="js/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/pdf.js"></script>
 
@@ -231,6 +232,7 @@ else
 
 </body>
 </html>
+
 <?php
 }
 else

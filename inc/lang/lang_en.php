@@ -1,6 +1,4 @@
 <?php
-$webui_language_code='en';
-$webui_actual_language='English';
 
 //*******************************************************
 // top of mind and menu
@@ -8,23 +6,22 @@ $webui_actual_language='English';
 $osmw_menu_GestSims = "Manage";
 $osmw_menu_GestSave = "Save";
 $osmw_menu_GestUpload = "Upload";
-$osmw_menu_Map = "Map (beta)";
 
 $osmw_menu_admin = "Settings";
-$osmw_menu_admin_Sims = "Settings Sumulators";
-$osmw_menu_admin_Lands = "Settings lands";
+$osmw_menu_admin_Sims = "Sumulators";
+$osmw_menu_admin_Lands = "Lands";
 $osmw_menu_admin_Users = "Settings Users";
 $osmw_menu_admin_Osmw = "Settings OSMW";
-$osmw_menu_admin_Edit = "Files Settings";
+$osmw_menu_help	= "Help";
 
 $osmw_menu_user_login = "Modify your account";
 $osmw_menu_user_logout = "Logout";
 
 //*******************************************************
-$osmw_menu_sim_section1 = "";
-$osmw_menu_sim_section2 = "";
-$osmw_menu_sim_section3 = "";
-$osmw_menu_sim_section4 = "";
+$osmw_menu_sim_section1 = "Actions Simulator";
+$osmw_menu_sim_section2 = "Actions Région";
+$osmw_menu_sim_section3 = "Actions Lands";
+$osmw_menu_sim_section4 = "Actions Vaious";
 
 //*******************************************************
 // label and message
@@ -53,11 +50,8 @@ $osmw_save_user_ok = "records successfully";
 $osmw_edit_user_ok = "changes successfully";
 $osmw_delete_user_ok = "removes successfully";
 $osmw_label_totl_simulator = "Total Simulators";
-$osmw_label_total_sim = "Total Regions";
-$osmw_label_nb_max_sim = "Maximum Number of Regions";
+$osmw_label_nb_max_sim = "Maximum Number of lands";
 $osmw_label_add_sim_check = "Adding area (1 = OK) / No addition region ( 0 = Nok)";
-$osmw_menu_choix_change = "Select the file has changed:";
-$osmw_file_change = "Changing the file";
 
 $osmw_label_info_iar_id = "Save  your Inventory Inworld";
 $osmw_label_info_iar = "IAR backup of the InWorld folder <b>''OSMWExport''</b> OR All Inventory <b>!!! WARNING !!! Is very long long time, view log.</b>";

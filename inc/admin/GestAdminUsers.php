@@ -17,9 +17,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
      //SECURITE MOTEUR
     /* ************************************ */
 
-    echo '<h1>'.$osmw_index_15.'</h1>';
-    echo '<div class="clearfix"></div>';
-	    //******************************************************
+	//******************************************************
     //  Affichage page principale
     //******************************************************
         // on se connecte a MySQL
@@ -190,10 +188,13 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 
             while ($data = $reponse->fetch())
             {
-                if ($_POST[$data['id_os']] != '')
-                {
-                    $clesprivilege = $clesprivilege.'|'.$_POST[$data['id_os']];
-                }
+				if (isset($_POST[$data['id_os']]))
+				{
+					if ($_POST[$data['id_os']] != '')
+					{
+						$clesprivilege = $clesprivilege.'|'.$_POST[$data['id_os']];
+					}
+				}
             }
 
             $sqlUp = "
@@ -211,28 +212,27 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
             echo "<i class='glyphicon glyphicon-ok'></i>";
             echo " User <strong>".$_POST['NewFirstName']." ".$_POST['NewLastName']."</strong> ".$osmw_edit_user_ok."</p>";            
         }
-    }
+
+		// ******************************************************
 		
-    // ******************************************************
-    if ($_POST['cmd'] == 'Supprimer')
-    {	
-        $sqlDel = "
-            DELETE FROM users 
-            WHERE `firstname` = '".$_POST['oldFirstName']."' 
-            AND `lastname` = '".$_POST['oldLastName']."' 
-        ";	
-        $reponse = $bdd->query($sqlDel);
+		if ($_POST['cmd'] == 'Supprimer')
+		{	
+			$sqlDel = "
+				DELETE FROM users 
+				WHERE `firstname` = '".$_POST['oldFirstName']."' 
+				AND `lastname` = '".$_POST['oldLastName']."' 
+			";	
+			$reponse = $bdd->query($sqlDel);
 
-        echo "<p class='alert alert-success alert-anim'>";
-        echo "<i class='glyphicon glyphicon-ok'></i>";
-        echo " User <strong>".$_POST['NewFirstName']." ".$_POST['NewLastName']."</strong> ".$osmw_delete_user_ok."</p>";  
+			echo "<p class='alert alert-success alert-anim'>";
+			echo "<i class='glyphicon glyphicon-ok'></i>";
+			echo " User <strong>".$_POST['NewFirstName']." ".$_POST['NewLastName']."</strong> ".$osmw_delete_user_ok."</p>";  
+		}
     }
-
     // ******************************************************
     // ************** LISTE DES UTILISATEURS ****************
     // ******************************************************
-    if ($_POST['cmd'] != 'Ajouter')
-    {
+
         echo '<form class="form-group pull-right" method="post" action="">';
         echo '<input type="hidden" value="Ajouter" name="cmd" '.$btnN3.'>';
         echo '<button class="btn btn-success" type="submit" '.$btnN3.'>';
@@ -243,8 +243,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 
         $sql = 'SELECT * FROM users ORDER BY id ASC';
         $reponse = $bdd->query($sql);
-
-        while ($data = $reponse->fetch()) {$n++;}
+		
+		$n = $reponse->fetchColumn();
 
         echo '<p>'.$osmw_label_total_user.' <span class="badge">'.$n.'</span></p>';
 
@@ -375,7 +375,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
             $privilegetxt4 = "";
             $block = "";
         }
-    }
+    
 
     echo '</table>';
 	$reponse->closeCursor();

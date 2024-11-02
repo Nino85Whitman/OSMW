@@ -17,23 +17,13 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 	}
      //SECURITE MOTEUR
     /* ************************************ */
-
-    echo '<h1>'.$osmw_index_17.'</h1>';
-    echo '<div class="clearfix"></div>';	
-	
- 	echo '<form class="form-group" method="post" action="">';
-    echo '<input type="hidden" name="cmd" value="Ajouter" '.$btnN3.'>';
-	echo '<button class="btn btn-success" type="submit" value="Ajouter un Simulateur" '.$btnN3.'><i class="glyphicon glyphicon-plus"></i></button> ';
-	echo '<button class="btn btn-warning" type="submit" name="cmd" value="tmux_load_all" '.$btnN3.'><i class="glyphicon glyphicon-play"></i> ALL Tmux</button> ' ;
-	echo '<button class="btn btn-danger" type="submit" name="cmd" value="tmux_kill_all" '.$btnN3.'><i class="glyphicon glyphicon-stop"></i> ALL Tmux</button> ';
-	echo '</form>';
- 
+	 
 	//******************************************************
 	// CONSTRUCTION de la commande pour ENVOI sur la console via  SSH
 	//******************************************************
 	if (isset($_POST['cmd']))
 	{
-		$osmw_simu =$_POST['name'];
+		if (isset($_POST['name'])){$osmw_simu =$_POST['name'];}
 		// on se connecte a MySQL
 		try{$bdd = new PDO('mysql:host='.$hostnameBDD.';dbname='.$database.';charset=utf8', $userBDD, $passBDD);}
 		catch (Exception $e){		die('Erreur : ' . $e->getMessage());	}
@@ -138,7 +128,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 
 			echo "<p class='alert alert-success alert-anim'>";
             echo "<i class='glyphicon glyphicon-ok'></i>";
-            echo " ".$osmw_simu." <strong>".$_POST['NewName']."</strong> ".$osmw_edit_user_ok."</p>";
+            echo " ".$osmw_simu." ".$osmw_edit_user_ok."</p>";
 		}
 
 		if($_POST['cmd'] == 'Supprimer')
@@ -147,32 +137,47 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 
 			echo "<p class='alert alert-success alert-anim'>";
             echo "<i class='glyphicon glyphicon-ok'></i>";
-            echo " ".$osmw_simu." <strong>".$_POST['NewName']."</strong> ".$osmw_delete_user_ok."</p>";
+            echo " ".$osmw_simu." ".$osmw_delete_user_ok."</p>";
 		}
 		// Exécution de la requete
-		if($sqlIns){$bdd->query($sqlIns);}
+		if(isset($sqlIns)){if($sqlIns){$bdd->query($sqlIns);}}
     }
 
     //******************************************************
     //  Affichage page principale
     //******************************************************
-
+	echo '<form class="form-group" method="post" action="">';
+	echo '<input type="hidden" name="cmd" value="Ajouter" '.$btnN3.'>';
+	echo '<button class="btn btn-dark" type="submit" value="Ajouter un Simulateur" '.$btnN3.'><i class="glyphicon glyphicon-plus"></i></button> ';	
+	// LINUX ***********************
+	if(PHP_OS == "Linux")
+	{
+		echo '<button class="btn btn-warning" type="submit" name="cmd" value="tmux_load_all" '.$btnN3.'><i class="glyphicon glyphicon-play"></i> ALL Tmux</button> ' ;
+		echo '<button class="btn btn-danger" type="submit" name="cmd" value="tmux_kill_all" '.$btnN3.'><i class="glyphicon glyphicon-stop"></i> ALL Tmux</button> ';
+	}
+	echo '</form>';
+	
+	
     echo '<p>'.$osmw_label_totl_simulator.' <span class="badge">'.NbOpensim().'</span></p>';
 	echo '<table class="table table-hover">';
 	echo '<tr class="info">';
-	echo '<th>Name Tmux</th>';
+	echo '<th>Name</th>';
 	echo '<th>Version</th>';
 	echo '<th>Path BIN</th>';
 	echo '<th>HG url</th>';
 	echo '<th>Path INI private</th>';
 	echo '<th>Save</th>';
     echo '<th>Delete</th>';
-	echo '<th>Load Tmux</th>';
-	echo '<th>Kill Tmux</th>';
-	echo '<th>State Tmux</th>';
+	// LINUX ***********************
+	if(PHP_OS == "Linux")
+	{
+		echo '<th>Load Tmux</th>';
+		echo '<th>Kill Tmux</th>';
+		echo '<th>State Tmux</th>';
+	}
 	echo '</tr>';
 	
-		// on se connecte a MySQL
+	// on se connecte a MySQL
 	try{$bdd = new PDO('mysql:host='.$hostnameBDD.';dbname='.$database.';charset=utf8', $userBDD, $passBDD);}
 	catch (Exception $e){		die('Erreur : ' . $e->getMessage());	}
 
@@ -181,13 +186,17 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 	// On affiche chaque entrée une à une
 	while ($data = $reponse->fetch())
 	{
+		// LINUX ***********************
+		if(PHP_OS == "Linux")
+		{
 			$cmd = 'tmux ls | grep '.$data['name'];
-			$retour =  CommandeSSH($hostname,$usernameSSH,$passwordSSH,$cmd);
+			//$retour =  CommandeSSH($hostname,$usernameSSH,$passwordSSH,$cmd);
 			$name_tmux = explode(":",$retour);
 
 			if ($name_tmux[0] == $data['name'])
 			{$check_tmux ='<p class="btn btn-success"><i class="glyphicon glyphicon-ok-sign"></i></p>';}
 			else{$check_tmux ='<p class="btn btn-danger"><i class="glyphicon glyphicon-remove-sign"></i></p>';}
+		}
 
 		echo '<tr>';
 		echo '<form method=post action="">';
@@ -201,9 +210,13 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 		echo '<td><input class="form-control" type="text" name="DB_OS" value="'.$data['DB_OS'].'" '.$btnN3.'></td>';
 		echo '<td><button class="btn btn-success" type="submit" name="cmd" value="Update" '.$btnN3.'><i class="glyphicon glyphicon-edit"></i></button></td>';
         echo '<td><button class="btn btn-danger" type="submit" name="cmd" value="Supprimer" '.$btnN3.'><i class="glyphicon glyphicon-trash"></i></button></td>';
-		echo '<td><button class="btn btn-warning" type="submit" name="cmd" value="tmux_load" '.$btnN3.'><i class="glyphicon glyphicon-play"></i></button></td>';
-		echo '<td><button class="btn btn-danger" type="submit" name="cmd" value="tmux_kill" '.$btnN3.'><i class="glyphicon glyphicon-stop"></i></button></td>';
-		echo '<td>'.$check_tmux.'</td>';
+		// LINUX ***********************
+		if(PHP_OS == "Linux")
+		{
+			echo '<td><button class="btn btn-warning" type="submit" name="cmd" value="tmux_load" '.$btnN3.'><i class="glyphicon glyphicon-play"></i></button></td>';
+			echo '<td><button class="btn btn-danger" type="submit" name="cmd" value="tmux_kill" '.$btnN3.'><i class="glyphicon glyphicon-stop"></i></button></td>';
+			echo '<td>'.$check_tmux.'</td>';
+		}
 		echo '</tr>';	
 		echo '</form>';
 		echo '</tr>';

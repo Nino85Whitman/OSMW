@@ -1,6 +1,4 @@
 <?php
-$webui_language_code = "fr";
-$webui_actual_language = "Français";
 
 //*******************************************************
 // Entete et menu
@@ -8,15 +6,13 @@ $webui_actual_language = "Français";
 $osmw_menu_GestSims = "Gérer";
 $osmw_menu_GestSave = "Sauvegarder";
 $osmw_menu_GestUpload = "Envoyer";
-$osmw_menu_Map = "Carte (Béta)";
-
 
 $osmw_menu_admin = "Paramétrage";
-$osmw_menu_admin_Sims = "Gestion des Simulateurs";
-$osmw_menu_admin_Lands = "Gestion des Regions";
+$osmw_menu_admin_Sims = "Simulateurs";
+$osmw_menu_admin_Lands = "Regions";
 $osmw_menu_admin_Users = "Gestion des Utilisateurs";
 $osmw_menu_admin_Osmw = "Configuration de OSMW	";
-$osmw_menu_admin_Edit = "Fichiers de Configuration";
+$osmw_menu_help	= "Aide";
 
 $osmw_menu_user_login = "Modifier son compte";
 $osmw_menu_user_logout = "Deconnexion";
@@ -54,14 +50,11 @@ $osmw_save_user_ok = "enregistré avec succés";
 $osmw_edit_user_ok = "mis à jour avec succés";
 $osmw_delete_user_ok = "supprimé avec succés";
 $osmw_label_totl_simulator = "Nombre total de Simulateurs";
-$osmw_label_total_sim = "Nombre total de Régions";
 $osmw_label_nb_max_sim = "Nombre Maximum de Régions Aurorisées";
 $osmw_label_add_sim_check = "Ajout de region (1 = OK) / Pas d'ajout de région ( 0 = Nok)";
-$osmw_menu_choix_change = "Choisir le fichier à modifier:";
-$osmw_file_change = "Modification sur le fichier";
 
-$osmw_label_info_iar_id = "Sauvegarder votre Inventaire Inworld";
-$osmw_label_info_iar = "Dossier InWorld <b>''OSMWExport''</b> OU inventaire complet <b>!!! ATTENTION !!! trés trés long , consulter le log.</b>";
+$osmw_label_info_iar_id = "Sauvegarde de votre Inventaire Inworld";
+$osmw_label_info_iar = "1- Inventaire complet <b>(!!! ATTENTION !!! trés trés long , consulter le log.)</b><br> 2- Sauvegarde du dossier InWorld <b>OSMWExport (Partiel)</b>";
 
 //*******************************************************
 // boutons

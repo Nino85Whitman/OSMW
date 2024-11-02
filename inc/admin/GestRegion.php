@@ -2,11 +2,21 @@
 if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 {
 	echo Affichage_Entete($_SESSION['opensim_select']);
+	$moteursOK = Securite_Simulateur();
+    /* ************************************ */
+	//SECURITE MOTEUR
+	$btnN1 = "disabled";$btnN2 = "disabled";$btnN3 = "disabled";
+	if ($_SESSION['privilege'] == 4) {$btnN1 = ""; $btnN2 = ""; $btnN3 = "";} // Niv 4
+	if ($_SESSION['privilege'] == 3) {$btnN1 = ""; $btnN2 = ""; $btnN3 = "";} // Niv 3
+	if ($_SESSION['privilege'] == 2) {$btnN1 = ""; $btnN2 = "";}              // Niv 2
+	if ($moteursOK == "OK" )
+	{
+		if($_SESSION['privilege'] == 1)
+		{$btnN1 = "";$btnN2 = "";$btnN3 = "";}
+	}
+     //SECURITE MOTEUR
+    /* ************************************ */
 
-
-    echo '<h1>'.$osmw_index_6.'</h1>';
-    echo '<div class="clearfix"></div>';
-	
     //******************************************************
     //  Affichage page principale
     //******************************************************
@@ -71,7 +81,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
             // Enregistrement du nouveau fichier 
             $fp = fopen (INI_Conf_Moteur($_SESSION['opensim_select'], "address")."Regions/RegionTemp.ini", "w");  
             
-            while (list($key, $val) = each($tableauIni))
+            foreach ($tableauIni as $key => $val) 
             {
                 fputs($fp, "[".$key."]\r\n");
                 fputs($fp, "RegionUUID = ".$tableauIni[$key]['RegionUUID']."\r\n");
@@ -134,7 +144,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 
             // Enregistrement du nouveau fichier 
             $fp = fopen (INI_Conf_Moteur($_SESSION['opensim_select'], "address")."Regions/RegionTemp.ini", "w");  
-            while (list($key, $val) = each($tableauIni))
+			
+            foreach ($tableauIni as $key => $val) 
             {
                 fputs($fp, "[".$key."]\r\n");
                 fputs($fp, "RegionUUID = ".$tableauIni[$key]['RegionUUID']."\r\n");
@@ -174,7 +185,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
             // Enregistrement du nouveau fichier 
             $fp = fopen (INI_Conf_Moteur($_SESSION['opensim_select'], "address")."Regions/RegionTemp.ini", "w");  
             
-            while (list($key, $val) = each($tableauIni))
+            foreach ($tableauIni as $key => $val) 
             {
                 fputs($fp, "[".$key."]\r\n");
                 fputs($fp, "RegionUUID          = ".$tableauIni[$key]['RegionUUID']."\r\n");
@@ -201,6 +212,9 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
     //  Affichage page principale
     // ******************************************************
     // ******************************************************
+	
+	$fonctionalites ='<b>Options: </b><br> NonPhysicalPrimMax = 256 |  PhysicalPrimMax = 64 | ClampPrimSize = False | MaxPrims = 15000 | MaxAgents = 100 | MaxPrimsPerUser = -1';
+	
     // *** Lecture Fichier Regions.ini ***
     $filename2 = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."Regions/Regions.ini";
 
@@ -224,16 +238,14 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 
 	// Autorisation d'ajout de region
 	$btn = 'disabled';
+	
 	if (INI_Conf("Parametre_OSMW","Autorized") == '1') 
 	{
 		$RegionMax = INI_Conf("NbAutorized", "NbAutorized");
-		echo '<p>'.$osmw_label_nb_max_sim .' <span class="badge">'.$RegionMax.'</span></p>';
-		echo '<p>'.$osmw_label_total_sim.' <span class="badge">'.count($tableauIni).'</span></p>';
+		echo '<p>'.$osmw_label_nb_max_sim .' <span class="badge">'.count($tableauIni).' / '.$RegionMax.'</span></p>';
+		
 		if (count($tableauIni) == $RegionMax ){$btn = 'disabled';}
 		else {$btn = $btnN3;}
-
-		
-		
 
 		echo '<form class="form-group" method="post" action="">';
 		echo '<input type="hidden" name="cmd" value="Ajouter">';
@@ -241,6 +253,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 		echo '</form>';
 	}
 
+echo '<p>'.$fonctionalites.'</p>';
 
     echo '<table class="table table-hover">';
     echo '<tr class="info">';
@@ -255,8 +268,12 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
     echo '<th>Delete</th>';
     echo '</tr>';
 
-    while (list($key, $val) = each($tableauIni))
+    
+	foreach ($tableauIni as $key => $val) 	
     {
+		if(isset($tableauIni[$key]['SizeX']) )	{	$SizeX = $tableauIni[$key]['SizeX'];	}else{$SizeX = "";}
+		if(isset($tableauIni[$key]['SizeY']))	{	$SizeY = $tableauIni[$key]['SizeY'];	}else{$SizeY = "";}
+		
         echo '<tr>';
 		echo '<form class="form-group" method="post" action="">';
 		echo '<input type="hidden" name="name_sim" value="'.$key.'" >';
@@ -266,8 +283,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 		echo '<td><input class="form-control" type="text" name="InternalPort" value="'.$tableauIni[$key]['InternalPort'].'" '.$btnN3.'></td>';
         echo '<td><input class="form-control" type="text" name="ExternalHostName" value="'.$tableauIni[$key]['ExternalHostName'].'" '.$btnN3.'></td>';
 		echo '<td><input class="form-control" type="text" name="RegionUUID" value="'.$tableauIni[$key]['RegionUUID'].'" '.$btnN3.'></td>';
-		echo '<td><input class="form-control" type="text" name="sizeX" value="'.$tableauIni[$key]['SizeX'].'" '.$btnN3.'></td>';
-		echo '<td><input class="form-control" type="text" name="sizeY" value="'.$tableauIni[$key]['SizeY'].'" '.$btnN3.'></td>';
+		echo '<td><input class="form-control" type="text" name="SizeX" value="'.$SizeX.'" '.$btnN3.'></td>';
+		echo '<td><input class="form-control" type="text" name="SizeY" value="'.$SizeY.'" '.$btnN3.'></td>';
 		echo '<td><button class="btn btn-success" type="submit" value="Modifier" name="cmd" '.$btnN3.'><i class="glyphicon glyphicon-edit"></i> '.$osmw_btn_modifier.'</button></td>';
         echo '<td><button class="btn btn-danger" type="submit" value="Supprimer" name="cmd" '.$btnN3.'><i class="glyphicon glyphicon-trash"></i> '.$osmw_btn_supprimer.'</button></td>';
 		echo '</tr>';

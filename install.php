@@ -53,6 +53,27 @@
         </div>
     </div>
 	
+	<div class="form-group">
+    <label for="base" class="col-sm-2 control-label">DNS Name Server :</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="text" name="domaine" maxlength="40" />
+        </div>
+    </div>
+
+
+    <div class="form-group">
+    <label for="base" class="col-sm-2 control-label">Username SSH :</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="text" name="ussh" maxlength="40" />
+        </div>
+    </div>
+    <div class="form-group">
+    <label for="base" class="col-sm-2 control-label">Password SSH :</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="text" name="pssh" maxlength="40" />
+        </div>
+    </div>
+
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
@@ -92,32 +113,34 @@ if (isset($_POST['etape']) AND $_POST['etape'] == 1)
     $login  = trim($_POST['login']);
     $pass   = trim($_POST['mdp']);
     $base   = trim($_POST['base']);
-
+	$domaine   = trim($_POST['domaine']);
 
     // on vérifie la connectivité avec le serveur avant d'aller plus loin
 	try{		$bdd = new PDO('mysql:host='.$hote.';dbname='.$base.';charset=utf8', $login, $pass);	}
 	catch (Exception $e){		die('Erreur : ' . $e->getMessage());	}
 
+$a = str_replace("-","",implode('-', str_split(substr(strtolower(md5(microtime().rand(1000, 9999))), 0, 40), 10)));
+$b = str_replace("-","",implode('-', str_split(substr(strtolower(md5(microtime().rand(1000, 9999))), 0, 40), 10)));
+echo $api_key = $a.$b;
+
     // le texte que l'on va mettre dans le config.php
     $texte = '
 <?php
-
+$hostname = "'.$domaine.'";		// Url of server
 $hostnameBDD = "'. $hote .'";		// IP of Bdd
 $userBDD = "'. $login .'";       	// login
 $passBDD  = "'. $pass .'";     	// password
 $database = "'. $base .'"; 		// Name of BDD
 
+//FOR LINUX HOST SIMULATOR
+$usernameSSH    = "'.$ussh.'";
+$passwordSSH    = "'.$pssh.'";
 
-/* Position center of your MAP */
-$px = 7000;
-$py = 7000;
+$api_key="'.$api_key.'";
 
-/* Themes */
-$themes = true;
-
-/* Languages */
-$translator = true;
-$languages=array("fr" => "French","en" => "English");
+// Languages 
+// fr / en /it
+$lang = "fr";
 
 ?>';
 
