@@ -38,12 +38,13 @@ Enjoy!
 	--> Régions.ini (droits d'écriture) / OpensimDefaults.ini, etc., qui doivent être accessibles
 	--> Préférer l'utilisation de fichier de config dans addon-modules/NameGrid/config/NameGrid.ini
 	
-Gestion des Utilisateurs:
-=> 4 Niveaux d'accès sont autorisés
--- Administrateurs 
--- Gestionnaires de sauvegardes
--- Invités / Compte privé par moteur
--- 1 compte root
+# Gestion des Utilisateurs:
+## 4 Niveaux d'accès sont autorisés
+- 1 compte root
+- Administrateurs 
+- Gestionnaires de sauvegardes
+- Invités / Compte privé par Simulateur
+
 
 
 # Suivi de versions 
