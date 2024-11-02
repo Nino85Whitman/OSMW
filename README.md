@@ -38,19 +38,19 @@ configuration required for OpenSimulator Manager Web (OSMW):
 Fonctionnement : Traduire
 Correction
 
-	-- OSMW envoie des commandes au simulateur via Remote Admin, sauf pour le START (Démarrage en console TMUX pour LINUX et Terminal pour WINDOWS)
-	-- Certains fichiers et/ou dossiers doivent avoir les droits d'écriture pour pouvoir être modifiés par OSMW (LINUX)
+-- OSMW envoie des commandes au simulateur via Remote Admin, sauf pour le START (Démarrage en console TMUX pour LINUX et Terminal pour WINDOWS)
+-- Certains fichiers et/ou dossiers doivent avoir les droits d'écriture pour pouvoir être modifiés par OSMW (LINUX)
+
+-- ATTENTION aux droits d'accès aux fichiers et au format des données saisies dans vos fichiers INI
+	--> Régions.ini (droits d'écriture) / OpensimDefaults.ini, etc., qui doivent être accessibles
+	--> Préférer l'utilisation de fichier de config dans addon-modules/NameGrid/config/NameGrid.ini
 	
-	-- ATTENTION aux droits d'accès aux fichiers et au format des données saisies dans vos fichiers INI
-		--> Régions.ini (droits d'écriture) / OpensimDefaults.ini, etc., qui doivent être accessibles
-		--> Préférer l'utilisation de fichier de config dans addon-modules/NameGrid/config/NameGrid.ini
-		
 Gestion des Utilisateurs:
-	=> 4 Niveaux d'accès sont autorisés
-	-- Administrateurs 
-	-- Gestionnaires de sauvegardes
-	-- Invités / Compte privé par moteur
-	-- 1 compte root
+=> 4 Niveaux d'accès sont autorisés
+-- Administrateurs 
+-- Gestionnaires de sauvegardes
+-- Invités / Compte privé par moteur
+-- 1 compte root
 
 ******************************************
 ********* Suivi de versions **********
