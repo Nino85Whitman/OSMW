@@ -8,9 +8,9 @@
 
 #Admin Login for new install
 =============================
-firstname = Super
-lastname  = Admin
-password  = password
+- firstname = Super
+- lastname  = Admin
+- password  = password
 
 #For Linux !!! REQUIREMENTS !!!!
 =============================
@@ -21,18 +21,15 @@ password  = password
 - Writing permission writing for install.php and delete after installation
 - Writing permission for folder files  /Regions of Opensimulator (writing Regions.ini)  
 
+# Systeme Web
+=============================
+- LINUX : Apache / MySQL / TMUX / PHP8 / LibSSH2
+- WINDOWS : WAMP (exemple : Laragon)
+
 Enjoy!
 
 
-
-# REQUIREMENTS 
-
-configuration required for OpenSimulator Manager Web (OSMW):
-	-- LINUX : Apache / MySQL / TMUX / PHP8 / LibSSH2
-	-- WINDOWS : WAMP (exemple : Laragon)
-	
-Fonctionnement : Traduire
-Correction
+# Fonctionnement
 
 -- OSMW envoie des commandes au simulateur via Remote Admin, sauf pour le START (Démarrage en console TMUX pour LINUX et Terminal pour WINDOWS)
 -- Certains fichiers et/ou dossiers doivent avoir les droits d'écriture pour pouvoir être modifiés par OSMW (LINUX)
