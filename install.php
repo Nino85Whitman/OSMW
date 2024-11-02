@@ -26,6 +26,13 @@
     <input type="hidden" name="etape" value="1" />
 
     <div class="form-group">
+    <label for="hote" class="col-sm-2 control-label">IP server Host :</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="text" name="server" maxlength="40" />
+        </div>
+    </div>
+
+    <div class="form-group">
     <label for="hote" class="col-sm-2 control-label">Database Host :</label>
         <div class="col-sm-4">
             <input class="form-control" type="text" name="hote" maxlength="40" />
@@ -52,14 +59,6 @@
             <input class="form-control" type="text" name="base" maxlength="40" />
         </div>
     </div>
-	
-	<div class="form-group">
-    <label for="base" class="col-sm-2 control-label">DNS Name Server :</label>
-        <div class="col-sm-4">
-            <input class="form-control" type="text" name="domaine" maxlength="40" />
-        </div>
-    </div>
-
 
     <div class="form-group">
     <label for="base" class="col-sm-2 control-label">Username SSH :</label>
@@ -93,8 +92,10 @@
 ?>
 
 <?php
+/*
  foreach($_POST as $key => $val) echo '$_POST["'.$key.'"]='.$val.'<br />';
  foreach($_GET as $key => $val) echo '$_GET["'.$key.'"]='.$val.'<br />';
+ */
 if (isset($_POST['etape']) AND $_POST['etape'] == 1)
 {
     // on crée une constante dont on se servira plus tard
@@ -109,40 +110,38 @@ if (isset($_POST['etape']) AND $_POST['etape'] == 1)
     }
 
     // on crée nos variables, et au passage on retire les éventuels espaces	
+	$server   = trim($_POST['server']);
     $hote   = trim($_POST['hote']);
     $login  = trim($_POST['login']);
     $pass   = trim($_POST['mdp']);
     $base   = trim($_POST['base']);
-	$domaine   = trim($_POST['domaine']);
+	if(isset($_POST['ussh'])){$ussh = $_POST['ussh'];}
+	if(isset($_POST['pssh'])){$pssh = $_POST['pssh'];}
 
-    // on vérifie la connectivité avec le serveur avant d'aller plus loin
-	try{		$bdd = new PDO('mysql:host='.$hote.';dbname='.$base.';charset=utf8', $login, $pass);	}
-	catch (Exception $e){		die('Erreur : ' . $e->getMessage());	}
-
-$a = str_replace("-","",implode('-', str_split(substr(strtolower(md5(microtime().rand(1000, 9999))), 0, 40), 10)));
-$b = str_replace("-","",implode('-', str_split(substr(strtolower(md5(microtime().rand(1000, 9999))), 0, 40), 10)));
-echo $api_key = $a.$b;
+	$a = str_replace("-","",implode('-', str_split(substr(strtolower(md5(microtime().rand(1000, 9999))), 0, 40), 10)));
+	$b = str_replace("-","",implode('-', str_split(substr(strtolower(md5(microtime().rand(1000, 9999))), 0, 40), 10)));
+	$api_key = $a.$b;
 
     // le texte que l'on va mettre dans le config.php
     $texte = '
-<?php
-$hostname = "'.$domaine.'";		// Url of server
-$hostnameBDD = "'. $hote .'";		// IP of Bdd
-$userBDD = "'. $login .'";       	// login
-$passBDD  = "'. $pass .'";     	// password
-$database = "'. $base .'"; 		// Name of BDD
+		<?php
+		$hostname = "'. $server .'";		// IP of server
+		$hostnameBDD = "'. $hote .'";		// IP of Bdd
+		$userBDD = "'. $login .'";       	// login
+		$passBDD  = "'. $pass .'";     	// password
+		$database = "'. $base .'"; 		// Name of BDD
 
-//FOR LINUX HOST SIMULATOR
-$usernameSSH    = "'.$ussh.'";
-$passwordSSH    = "'.$pssh.'";
+		//FOR LINUX HOST SIMULATOR
+		$usernameSSH    = "'.$ussh.'";
+		$passwordSSH    = "'.$pssh.'";
 
-$api_key="'.$api_key.'";
+		$api_key="'.$api_key.'";
 
-// Languages 
-// fr / en /it
-$lang = "fr";
+		// Languages 
+		// fr / en /it
+		$lang = "fr";
 
-?>';
+		?>';
 
     if (!$ouvrir = fopen($fichier, 'w'))
     {
@@ -157,17 +156,54 @@ $lang = "fr";
     echo '<div class="alert alert-success">Creation of effected configuration file with success ...</div>';
     fclose($ouvrir);
 
+    // on vérifie la connectivité avec le serveur avant d'aller plus loin
+	try{		$bdd = new PDO('mysql:host='.$hote.';charset=utf8', $login, $pass);	}
+	catch (Exception $e){		die('Erreur : ' . $e->getMessage());	}
 
-    $requetes = '';
-    $sql = file('./inc/config/sql/database.sql');
-    foreach($sql as $lecture)
-    {
-        if (substr(trim($lecture), 0, 2) != '--')
-        {
-            $requetes .= $lecture;
-        }
-    }
-	$reponse = $bdd->query($requetes);
+	$reponse = $bdd->query("CREATE DATABASE IF NOT EXISTS `".$base."`;");
+	$reponse = $bdd->query("USE `".$base."`;");
+ 
+	$reponse = $bdd->query("CREATE TABLE IF NOT EXISTS `config` (
+		  `id` int NOT NULL AUTO_INCREMENT,
+		  `cheminAppli` varchar(50) NOT NULL,
+		  `destinataire` varchar(50) NOT NULL,
+		  `Autorized` int NOT NULL,
+		  `NbAutorized` int NOT NULL,
+		  `VersionOSMW` varchar(50) NOT NULL,
+		  `urlOSMW` varchar(255) NOT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;");
+	
+	$reponse = $bdd->query("INSERT INTO `config` (`id`, `cheminAppli`, `destinataire`, `Autorized`, `NbAutorized`, `VersionOSMW`, `urlOSMW`) VALUES
+		(1, '/OSMW/', 'mymail@domain.com', 1, 4, 'Version 24.11', 'https://www.domain.com/');");	
+		
+	$reponse = $bdd->query("CREATE TABLE IF NOT EXISTS `moteurs` (
+		  `osAutorise` tinyint NOT NULL AUTO_INCREMENT,
+		  `id_os` varchar(50) NOT NULL,
+		  `name` varchar(50) NOT NULL,
+		  `version` varchar(50) NOT NULL,
+		  `address` varchar(50) NOT NULL,
+		  `DB_OS` varchar(50) NOT NULL,
+		  `hypergrid` varchar(255) NOT NULL,
+		  PRIMARY KEY (`osAutorise`)
+		) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;");
+
+	$reponse = $bdd->query("INSERT INTO `moteurs` (`osAutorise`, `id_os`, `name`, `version`, `address`, `DB_OS`, `hypergrid`) VALUES
+		(1, 'Simulateur_1_Exemple', 'Whitman Corporation', 'Opensim 0.9.3', 'C:/OPENSIM/', 'addon-modules/osgrid/config/osgrid.ini', 'hg.osgrid.org:80');");
+
+	$reponse = $bdd->query("CREATE TABLE IF NOT EXISTS `users` (
+		  `id` int NOT NULL AUTO_INCREMENT,
+		  `firstname` varchar(15) NOT NULL,
+		  `lastname` varchar(15) NOT NULL,
+		  `password` text NOT NULL,
+		  `privilege` int NOT NULL,
+		  `osAutorise` varchar(50) NOT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;");
+
+	$reponse = $bdd->query("INSERT INTO `users` (`id`, `firstname`, `lastname`, `password`, `privilege`, `osAutorise`) VALUES
+		(1, 'Super', 'Admin', 'dc79f6a0f51567c820d0535f0c72a77cc5152258', 4, '');");
+
 
     echo '<div class="alert alert-success">Installing the database tables of data effected with success...</div>';
     echo '<div class="alert alert-warning">Please delete the file <strong>install.php</strong> of server ...</div>';
@@ -184,7 +220,7 @@ $lang = "fr";
 <div class="clearfix"></div>
 
 <footer class="footer">
-    <p><CENTER>Open Simulator Manager Web Intaller <?php echo date(Y); ?></CENTER></p>
+    <p><CENTER>Open Simulator Manager Web Intaller <?php echo date('Y'); ?></CENTER></p>
 </footer>
 </div>
 
