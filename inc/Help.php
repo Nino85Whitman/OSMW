@@ -1,7 +1,7 @@
 <?php 
 if (isset($_SESSION['authentification']) )
 {
-	echo'HELP';
+	echo'https://github.com/Nino85Whitman/OSMW-OpenSim-Manager-Web';
 	
 }
 else {header('Location: index.php');}
