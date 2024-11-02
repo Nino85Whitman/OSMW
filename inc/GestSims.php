@@ -1,6 +1,7 @@
 <?php 
 if (isset($_SESSION['authentification']))
 {
+
 	echo Affichage_Entete($_SESSION['opensim_select']);
 	$moteursOK = Securite_Simulateur();
     /* ************************************ */
@@ -16,9 +17,6 @@ if (isset($_SESSION['authentification']))
 	}
      //SECURITE MOTEUR
     /* ************************************ */
-	
-    echo '<h1>'.$osmw_index_1.'</h1>';
-    echo '<div class="clearfix"></div>';
 	
     //******************************************************
     /* Selon ACTION bouton => Envoi Commande via Remote Admin sauf START */
@@ -36,15 +34,18 @@ if (isset($_SESSION['authentification']))
 	//**************************
 	// EXECUTION COMMANDE SYSTEME
 	//**************************
-	if($_POST['cmdStart'])
+	if(isset($_POST['cmdStart']))
 	{			
-		//echo PHP_OS;
-		
 		// WINDOWS ***********************
-		//Exemple: "start /D C:\OpenSimulator\opensim_FestAvi2015_0821 OpenSim.exe"	
-		//$new_chemin = str_replace("/", "\\",INI_Conf_Moteur($_SESSION['opensim_select'], "address") );			
-		//$cmd ="start /D ".$new_chemin." OpenSim.exe";
-		
+		if(PHP_OS == "WINNT")
+		{
+			// WINDOWS ***********************
+			//Exemple: "start /D C:\OpenSimulator\opensim_FestAvi2015_0821 OpenSim.exe"	
+			$new_chemin = str_replace("/", "\\",INI_Conf_Moteur($_SESSION['opensim_select'], "address") );			
+			$cmd ="start /D ".$new_chemin." OpenSim.exe";	
+			exec( $cmd);	
+		}
+
 		// LINUX ***********************
 		if(PHP_OS == "Linux")
 		{
@@ -56,7 +57,7 @@ if (isset($_SESSION['authentification']))
 	//**************************
 	// COMMANDE PAR REMOTE ADMIN (specifique)
 	//**************************
-	if($_POST['cmdEstate'])	
+	if(isset($_POST['cmdEstate']))
 	{
 		$myRemoteAdmin = new RemoteAdmin(trim($hostname), trim($RemotePort), trim($access_password2));
 		$myRemoteAdmin->SendCommand('admin_estate_reload',  array());
@@ -64,39 +65,54 @@ if (isset($_SESSION['authentification']))
 	//**************************
 	// COMMANDE PAR REMOTE ADMIN (admin_console_command)
 	//**************************
-
-	if($_POST['cmd'] == 'Alerte General')	{$parameters = array('command' => 'alert '.$_POST["msg_alert"]);}
-	if($_POST['cmd'] == 'Stop')				{$parameters = array('command' => 'quit'); 
+	if(isset($_POST['cmd'])){$COMMAND = $_POST['cmd']; }else{$COMMAND ="";} 
+	
+	if($COMMAND == 'Stop')				
+	{
+		$parameters = array('command' => 'quit'); 
+		// LINUX ***********************
+		if(PHP_OS == "Linux")
+		{
 			$cmd = "rm ".INI_Conf_Moteur($_SESSION['opensim_select'], "address")."OpenSim.log";
-			CommandeSSH($hostname,$usernameSSH,$passwordSSH,$cmd);}
-	if($_POST['cmd'] == 'Restart')			{$parameters = array('command' => 'restart');}
-	if($_POST['cmd'] == 'Region Root')		{$parameters = array('command' => 'change region root');}
-	if($_POST['cmd'] == 'Update Client')	{$parameters = array('command' => 'force update');}
-	if($_POST['cmd'] == 'FCache Assets')	{$parameters = array('command' => 'fcache assets');}
-	if($_POST['cmd'] == 'FCache ClearF')	{$parameters = array('command' => 'fcache clear file');}		
-	if($_POST['cmd'] == 'Generate Map')		{$parameters = array('command' => 'generate map');}
-	if($_POST['cmd'] == 'Windlight enable')	{$parameters = array('command' => 'windlight enable');}
-	if($_POST['cmd'] == 'Windlight disable'){$parameters = array('command' => 'windlight disable');}
-	if($_POST['cmd'] == 'Windlight load')	{$parameters = array('command' => 'windlight load');}
-	if($_POST['cmd'] == 'Elevate')			{$parameters = array('command' => 'terrain elevate 1');}
-	if($_POST['cmd'] == 'Lower')			{$parameters = array('command' => 'terrain lower 1');}
+			CommandeSSH($hostname,$usernameSSH,$passwordSSH,$cmd);
+		}
+		if(PHP_OS == "WINNT")
+		{
+			$new_chemin = str_replace("/", "\\",INI_Conf_Moteur($_SESSION['opensim_select'], "address") );			
+			$cmd ="del ".$new_chemin."\OpenSim.log";	
+			exec($cmd);
+		}		
+	}
+			
+	if($COMMAND == 'Alerte General')	{$parameters = array('command' => 'alert '.$_POST["msg_alert"]);}
+	if($COMMAND == 'Restart')			{$parameters = array('command' => 'restart');}
+	if($COMMAND == 'Region Root')		{$parameters = array('command' => 'change region root');}
+	if($COMMAND == 'Update Client')	{$parameters = array('command' => 'force update');}
+	if($COMMAND == 'FCache Assets')	{$parameters = array('command' => 'fcache assets');}
+	if($COMMAND == 'FCache ClearF')	{$parameters = array('command' => 'fcache clear file');}		
+	if($COMMAND == 'Generate Map')		{$parameters = array('command' => 'generate map');}
+	if($COMMAND == 'Windlight enable')	{$parameters = array('command' => 'windlight enable');}
+	if($COMMAND == 'Windlight disable'){$parameters = array('command' => 'windlight disable');}
+	if($COMMAND == 'Windlight load')	{$parameters = array('command' => 'windlight load');}
+	if($COMMAND == 'Elevate')			{$parameters = array('command' => 'terrain elevate 1');}
+	if($COMMAND == 'Lower')			{$parameters = array('command' => 'terrain lower 1');}
 	
-	if($_POST['cmd'] == 'StartLogin')		{$parameters = array('command' => 'login enable');}
-	if($_POST['cmd'] == 'StopLogin')		{$parameters = array('command' => 'login disable');}
-	if($_POST['cmd'] == 'StatusLogin')		{$parameters = array('command' => 'login status');}
+	if($COMMAND == 'StartLogin')		{$parameters = array('command' => 'login enable');}
+	if($COMMAND == 'StopLogin')		{$parameters = array('command' => 'login disable');}
+	if($COMMAND == 'StatusLogin')		{$parameters = array('command' => 'login status');}
 	
-	if($_POST['cmd'] == 'kick_user')		{ $kick = 'kick user '.$_POST["avatar_name"].' ejected by administrator.' ;$parameters = array('command' =>  $kick );}
-	if($_POST['cmd'] == 'appearance_user')	{ $appearance = 'appearance show '.$_POST["avatar_name"] ;$parameters = array('command' =>  $appearance );}
+	if($COMMAND == 'kick_user')		{ $kick = 'kick user '.$_POST["avatar_name"].' ejected by administrator.' ;$parameters = array('command' =>  $kick );}
+	if($COMMAND == 'appearance_user')	{ $appearance = 'appearance show '.$_POST["avatar_name"] ;$parameters = array('command' =>  $appearance );}
 	
-	if($_POST['cmd'] == 'estate_name')		{$estate_name = 'estate set name 101 "'.$_POST["estate_name"].'"' ;$parameters = array('command' => $estate_name );}
-	if($_POST['cmd'] == 'estate_owner')		{echo $estate_owner = 'estate set owner 101 '.$_POST["estate_owner"] ;$parameters = array('command' => $estate_owner );}
+	if($COMMAND == 'estate_name')		{$estate_name = 'estate set name 101 "'.$_POST["estate_name"].'"' ;$parameters = array('command' => $estate_name );}
+	if($COMMAND == 'estate_owner')		{echo $estate_owner = 'estate set owner 101 '.$_POST["estate_owner"] ;$parameters = array('command' => $estate_owner );}
 	
-	if($_POST['cmd']<>"")
+	if($COMMAND<>"")
 	{
 		$myRemoteAdmin = new RemoteAdmin(trim($hostname), trim($RemotePort), trim($access_password2));
 		$retour_radmin = $myRemoteAdmin->SendCommand('admin_console_command', $parameters);
 	}	
-	if($_POST['cmd'])
+	if($COMMAND)
 	{
 		//debug($retour_radmin);
 		echo $messageInfo;
@@ -133,14 +149,18 @@ if (isset($_SESSION['authentification']))
 	//################################################
 	if (isset($_POST['section1'])=="section1")
     {
-		$cmd = 'tmux ls | grep '.INI_Conf_Moteur($_SESSION['opensim_select'], "name");
-		$retour =  CommandeSSH($hostname,$usernameSSH,$passwordSSH,$cmd);
-		$name_tmux = explode(":",$retour);
+		// LINUX ***********************
+		if(PHP_OS == "Linux")
+		{
+			$cmd = 'tmux ls | grep '.INI_Conf_Moteur($_SESSION['opensim_select'], "name");
+			$retour =  CommandeSSH($hostname,$usernameSSH,$passwordSSH,$cmd);
+			$name_tmux = explode(":",$retour); 
 
-		if ($name_tmux[0] == INI_Conf_Moteur($_SESSION['opensim_select'], "name"))
-		{$check_tmux ='<a href="index.php?a=AdminSims"><p class="btn btn-success">Tmux check <i class="glyphicon glyphicon-ok-sign"></i></p></a>';}
-		else{$check_tmux ='<a href="index.php?a=AdminSims"><p class="btn btn-danger">Tmux check <i class="glyphicon glyphicon-remove-sign"></i></p></a>';}
-		
+			if ($name_tmux[0] == INI_Conf_Moteur($_SESSION['opensim_select'], "name"))
+			{$check_tmux ='<a href="index.php?a=AdminSims"><p class="btn btn-success">Tmux check <i class="glyphicon glyphicon-ok-sign"></i></p></a>';}
+			else{$check_tmux ='<a href="index.php?a=AdminSims"><p class="btn btn-danger">Tmux check <i class="glyphicon glyphicon-remove-sign"></i></p></a>';}
+		}else{$check_tmux = "";}
+
 		echo '<form class="form-inline" method="post" action="">';
 		echo '<table class="table table-hover"><tr><td align=left >';
 
@@ -305,7 +325,6 @@ if (isset($_SESSION['authentification']))
 	$tableauIni = parse_ini_file($filename, true);
 	
     echo '<table  class="table table-hover">';
-	//echo '<tr class="default"><td colspan=7><p><strong>'.$osmw_label_total_sim.'<span class="badge">'.count($tableauIni).'</span></strong></td><tr>';
     echo '<tr class="info">';
     echo '<th>Name</th>';
     echo '<th>Image</th>';
@@ -314,11 +333,30 @@ if (isset($_SESSION['authentification']))
     echo '<th>Port</th>';
     echo '</tr>';
 	
-	while (list($key, $val) = each($tableauIni))
+	
+	
+	foreach ($tableauIni as $key => $val) 
 	{
-		$ImgMap = "http://".$hostname.":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$key]['RegionUUID']);
+		$ImgMapHttp = "http://".$hostname.":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$key]['RegionUUID']);
+		$ImgMapLocal =  './img/'.str_replace("-","",$tableauIni[$key]['RegionUUID']).'.jpg';
+			
+		if (Test_Url($ImgMapHttp) == false)
+		{
+			$ImgMap = "./img/offline.jpg";
+			unlink($ImgMapLocal );
+		}
+		else
+		{
+			if(!file_exists($ImgMapLocal))
+			{
+				copy($ImgMapHttp, $ImgMapLocal);
+			}
+			$ImgMap = $ImgMapLocal;
+		}
 		
-        if (Test_Url($ImgMap) == false){$ImgMap = "img/offline.jpg";}
+
+		
+       
 	
 		echo '<tr>';
         echo '<td><h5>'.$key.'</h5></td>';
@@ -383,7 +421,7 @@ if (isset($_SESSION['authentification']))
 			echo "File exist: <strong>" .$fichierLog.'</strong>';
 			echo '</div>';
 		}
-		else if ($_POST['cmd'])
+		else if ($COMMAND)
 		{
 			echo '<div class="alert alert-danger alert-anim" role="alert">';
 			echo "File not exist: <strong>" .$fichierLog.'</strong>';

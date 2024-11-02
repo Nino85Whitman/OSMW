@@ -17,9 +17,7 @@ if (isset($_SESSION['authentification']))
      //SECURITE MOTEUR
     /* ************************************ */
 
-    echo '<h1>'.$osmw_index_8.'</h1>';
-    echo '<div class="clearfix"></div>';
-	    //******************************************************
+	//******************************************************
     //  Affichage page principale
     //******************************************************
     // on se connecte a MySQL
@@ -72,21 +70,15 @@ if (isset($_SESSION['authentification']))
 
 		echo '<form class="form-group" method="post" action="">';
 		echo '<input type="hidden" value="'.$data['id'].'" name="id_user">';
+		
 		echo '<table class="table table-hover">';
-		echo '<tr class="info">';
-		echo '<td>Firstname:</td>';
-		echo '<td><input class="form-control" type="text" value="'.$data['firstname'].'" name="firstname" ></td>';
-		echo '</tr><tr class="info">';
-		echo '<td>Lastname:</td>';
-		echo '<td><input class="form-control" type="text" value="'.$data['lastname'].'" name="lastname" ></td>';
-		echo '</tr><tr class="warning">';		
-		echo '<td>Password:</td>';
-		echo '<td><input class="form-control" type="text" value="'.$data['password'].'" name="password" ></td>';		
-		echo '</tr><tr>';
-		echo '</form>';
+			echo '<tr class="info"><td>Firstname:</td><td><input class="form-control" type="text" value="'.$data['firstname'].'" name="firstname" ></td></tr>';		
+			echo '<tr class="info"><td>Lastname:</td><td><input class="form-control" type="text" value="'.$data['lastname'].'" name="lastname" ></td></tr>';	
+			echo '<tr class="warning"><td>Password:</td><td><input class="form-control" type="text" value="'.$data['password'].'" name="password" ></td></tr>';		
 		echo '</table>';
-        echo' <button type="submit" class="btn btn-success" name="cmd" value="Enregistrer">';
-        echo '<i class="glyphicon glyphicon-ok"></i> '.$osmw_btn_enregistrer.'</button>';
+		echo '<button type="submit" class="btn btn-success" name="cmd" value="Enregistrer"><i class="glyphicon glyphicon-ok"></i> '.$osmw_btn_enregistrer.'</button>';	
+		
+		echo '</form>';
 	
     $reponse->closeCursor();
 }

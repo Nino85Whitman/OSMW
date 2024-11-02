@@ -16,11 +16,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 	}
      //SECURITE MOTEUR
     /* ************************************ */
-	
-    echo '<h1>'.$osmw_index_18.'</h1>'; 
-    echo '<div class="clearfix"></div>';   
 
-		// on se connecte a MySQL
+	// on se connecte a MySQL
 	try{$bdd = new PDO('mysql:host='.$hostnameBDD.';dbname='.$database.';charset=utf8', $userBDD, $passBDD);}
 	catch (Exception $e){		die('Erreur : ' . $e->getMessage());	}
 
@@ -44,7 +41,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
             $reponse = $bdd->query($sqlIns);
 			echo "<p class='alert alert-success alert-anim'>";
             echo "<i class='glyphicon glyphicon-ok'></i>";
-            echo " Configuration <strong>".$_POST['NewName']."</strong> ".$osmw_save_user_ok."</p>";
+            echo " Configuration ".$osmw_save_user_ok."</p>";
         }
     }
     // ******************************************************
@@ -61,7 +58,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 		echo '<form class="form-group" method="post" action="">';
 		echo '<table class="table table-hover">';
 		echo '<tr>';
-		echo '<td>Path (ex: /manager/):</td>';
+		echo '<td>Path (ex: /OSMW/):</td>';
 		echo '<td><input class="form-control" type="text" value="'.$data['cheminAppli'].'" name="cheminAppli" '.$btnN3.'></td>';
 		echo '</tr>';
 		echo '<tr>';

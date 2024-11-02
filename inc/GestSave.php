@@ -18,9 +18,6 @@ if (isset($_SESSION['authentification']))
      //SECURITE MOTEUR
     /* ************************************ */
 
-    echo '<h1>'.$osmw_index_2.'</h1>';
-    echo '<div class="clearfix"></div>';
-
     //******************************************************
     //  Affichage page principale
     //******************************************************
@@ -57,11 +54,38 @@ if (isset($_SESSION['authentification']))
     echo '<th>Action</th>';
     echo '</tr>';
 
-	while (list($key, $val) = each($tableauIni))
+	foreach ($tableauIni as $key => $val) 
 	{
         $uuid = str_replace("-", "", $tableauIni[$key]['RegionUUID']);
-		$ImgMap = "http://".$hostname.":".trim($srvOS)."/index.php?method=regionImage".$uuid;
-        if (Test_Url($ImgMap) == false) {$ImgMap = "img/offline.jpg";}
+		
+		//$ImgMap = "http://".$hostname.":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$key]['RegionUUID']);
+        //if (Test_Url($ImgMap) == false){$ImgMap = "img/offline.jpg";}
+	
+		$ImgMapHttp = "http://".$hostname.":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$key]['RegionUUID']);
+		$ImgMapLocal =  './img/'.str_replace("-","",$tableauIni[$key]['RegionUUID']).'.jpg';
+			
+		if (Test_Url($ImgMapHttp) == false)
+		{
+			$ImgMap = "./img/offline.jpg";
+			unlink($ImgMapLocal );
+		}
+		else
+		{
+			if(file_exists($ImgMapLocal))
+			{
+				if (file_exists($ImgMapLocal))
+				{
+					//echo "$ImgMapLocal was last modified: " . date ("F d Y H:i:s.", filemtime($ImgMapLocal));
+				}
+			}
+			else
+			{
+				copy($ImgMapHttp, $ImgMapLocal);
+			}
+			$ImgMap = $ImgMapLocal;
+		}
+		
+
         echo '<tr>';
         echo '<td><h5>'.$key.'</h5></td>';
 		echo '<td><img  style="height: 90px;" class="img-thumbnail" alt="" src="'.$ImgMap.'"></td>';
@@ -173,7 +197,7 @@ if (isset($_SESSION['authentification']))
 			{
 				$parameters = array(
 					'region_name' => $_POST['name_sim'], 
-					'filename' => 'BackupOAR_'.$_POST['name_sim'].'_'.date(d_m_Y_H_i).'.oar'
+					'filename' => 'BackupOAR_'.$_POST['name_sim'].'_'.date('d_m_Y_H_i').'.oar'
 				);
 				$myRemoteAdmin->SendCommand('admin_save_oar', $parameters);
 				echo $messageInfo ;
@@ -182,7 +206,7 @@ if (isset($_SESSION['authentification']))
 			{
 				$parameters = array(
 					'region_name' => $_POST['name_sim'], 
-					'filename' => 'BackupXML_'.$_POST['name_sim'].'_'.date(d_m_Y_H_i).'.xml2');
+					'filename' => 'BackupXML_'.$_POST['name_sim'].'_'.date('d_m_Y_H_i').'.xml2');
 				$myRemoteAdmin->SendCommand('admin_save_xml', $parameters);
 				echo $messageInfo ;
 			}
@@ -196,7 +220,7 @@ if (isset($_SESSION['authentification']))
 			{
 				$parameters = array(
                 'region_name' => $_POST['name_sim'], 
-                'filename' => 'BackupMAP_'.$_POST['name_sim'].'_'.date(d_m_Y_h).'.jpg'
+                'filename' => 'BackupMAP_'.$_POST['name_sim'].'_'.date('d_m_Y_h').'.jpg'
 				);
 				$myRemoteAdmin->SendCommand('admin_save_heightmap', $parameters);
 				echo $messageInfo ;
@@ -205,7 +229,7 @@ if (isset($_SESSION['authentification']))
 			{
 				$parameters = array(
                 'region_name' => $_POST['name_sim'], 
-                'filename' => 'BackupMAP_'.$_POST['name_sim'].'_'.date(d_m_Y_h).'.raw'
+                'filename' => 'BackupMAP_'.$_POST['name_sim'].'_'.date('d_m_Y_h').'.raw'
 				);
 				$myRemoteAdmin->SendCommand('admin_save_heightmap', $parameters);
 				echo $messageInfo ;
@@ -222,8 +246,8 @@ if (isset($_SESSION['authentification']))
 		if ($_POST['cmd'] == "delete")
 		{
 			$file_delete = INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_file'];
-			$cmd = 'rm "'.$file_delete.'"';
-			CommandeSSH($hostname,$usernameSSH,$passwordSSH,$cmd);
+			unlink($file_delete);
+
             echo '<div class="alert alert-success alert-anim" role="alert">Fichier '.$chemin.$_POST['name_file'].' '.$osmw_delete_user_ok.'<strong> OpenSim.log</strong</div>';
 			echo $messageInfo ;
 		}
@@ -236,7 +260,7 @@ if (isset($_SESSION['authentification']))
                 
 				if($_POST["choix"]=="section")
 				{
-					$parameters = array('command' => 'save iar '.$fullname.' /OSMWExport '.$_POST['pass'].' BackupIAR_'.$_POST['first'].'_'.$_POST['last'].'_'.date(d_m_Y_h).'.iar');
+					$parameters = array('command' => 'save iar '.$fullname.' /OSMWExport '.$_POST['pass'].' BackupIAR_'.$_POST['first'].'_'.$_POST['last'].'_'.date('d_m_Y_h').'.iar');
 				}
 				if($_POST["choix"]=="all")
 				{
