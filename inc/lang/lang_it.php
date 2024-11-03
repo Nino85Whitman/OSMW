@@ -1,6 +1,4 @@
 <?php
-$webui_language_code='it';
-$webui_actual_language='Italian';
 
 //*******************************************************
 // in cima ai pensieri e al menu
@@ -8,14 +6,13 @@ $webui_actual_language='Italian';
 $osmw_menu_GestSims = "Gestisci";
 $osmw_menu_GestSave = "Salva";
 $osmw_menu_GestUpload = "Carica";
-$osmw_menu_Map = "Mappa (beta)";
 
 $osmw_menu_admin = "Impostazioni";
 $osmw_menu_admin_Sims = "Impostazioni Simulatore";
 $osmw_menu_admin_Lands = "Impostazioni Regioni";
 $osmw_menu_admin_Users = "Impostazioni Utenti";
-$osmw_menu_admin_Osmw = "Impostazioni ZNMW";
-$osmw_menu_admin_Edit = "Impostazioni File";
+$osmw_menu_admin_Osmw = "Impostazioni OSMW";
+$osmw_menu_help	= "Aide";
 
 $osmw_menu_user_login = "Modifica il tuo account";
 $osmw_menu_user_logout = "Esci";
@@ -60,7 +57,7 @@ $osmw_menu_choix_change = "Selezionare il file è cambiato:";
 $osmw_file_change = "Modifica del file";
 
 $osmw_label_info_iar_id = "Salva il tuo Inventario Inworld";
-$osmw_label_info_iar = "Backup IAR della cartella InWorld <b>''ZNMWExport''</b> O tutto l'inventario <b>!!! ATTENZIONE !!! È un tempo molto lungo, visualizzare il log.</b>";
+$osmw_label_info_iar = "Backup IAR della cartella InWorld <b>''OSMW Export''</b> O tutto l'inventario <b>!!! ATTENZIONE !!! È un tempo molto lungo, visualizzare il log.</b>";
 
 //*******************************************************
 // bottoni
@@ -77,7 +74,7 @@ $osmw_btn_enregistrer = "Salva";
 $osmw_btn_ajout_simu = "Aggiungi";
 $osmw_btn_search = "Cerca";
 $osmw_btn_view_save = "Visualizza file di backup";
-$osmw_btnave_sventory= "Salva una sezione del suo inventario";
+$osmw_btn_save_inventory= "Salva una sezione del suo inventario";
 
 //*******************************************************
 // errori
