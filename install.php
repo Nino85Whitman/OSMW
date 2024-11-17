@@ -202,7 +202,7 @@ if (isset($_POST['etape']) AND $_POST['etape'] == 1)
 		) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;");
 
 	$reponse = $bdd->query("INSERT INTO `users` (`id`, `firstname`, `lastname`, `password`, `privilege`, `osAutorise`) VALUES
-		(1, 'Super', 'Admin', 'dc79f6a0f51567c820d0535f0c72a77cc5152258', 4, '');");
+		(1, 'Super', 'Admin', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 4, '');");
 
 
     echo '<div class="alert alert-success">Installing the database tables of data effected with success...</div>';
